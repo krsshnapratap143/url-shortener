@@ -1,0 +1,56 @@
+doctype html
+html(lang="en")
+  head
+    title URL Shortener
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="icon" href="https://fonts.gstatic.com/s/i/materialicons/link/v9/24px.svg" type="image/svg+xml")
+    link(href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(rel="stylesheet", href="/style.css")
+
+  body
+    .container
+      .sidebar
+        h2
+          span.material-icons.icon link
+          | History
+        if history.length
+          each entry in history
+            - var hostname = new URL(entry.longurl).hostname.replace('www.', '');
+            - var shortUrl = 'https://bonaaurlshortener-production.up.railway.app'+ '/' + entry.shorturl
+            - var id = entry._id.toString()
+            .history-entry(data-id=id)
+              div
+                h3= hostname
+                a.short-link(href=shortUrl target="_blank")= shortUrl
+              button.delete-btn(type="button") 
+                span.material-icons delete
+        else
+          p No history yet
+
+      .main
+        h1 
+          span.material-icons.icon link
+          | URL Shortener
+
+        form#urlForm(method="POST")
+          input(type="url", name="url", placeholder="Paste long URL..." required)
+          button(type="submit")
+            span.material-icons.white link
+            | Shorten
+
+        #result-container
+          if shortUrl
+            #short-url-container
+              p Your shortened URL is ready!
+              a(href=shortUrl target="_blank")= shortUrl
+          if error
+            #error
+              span.material-icons error
+              p= error
+          if !error && shortUrl
+            #success-message
+              span.material-icons check_circle
+              p URL shortened successfully!
+
+    script(src="/script.js")
